@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body{
+        margin: 200px;
+    }
+    button{
+        size: 20px;
+        }
+</style>
+<body>
+    <h2>
+        Light on/off
+    </h2>
+    <img id="bulb" src="https://www.w3schools.com/js/pic_bulboff.gif" alt="">
+    <br>    
+    <button id="khol">
+        On
+    </button>
+    <button id="banda">
+        Off
+    </button>
+</body>
+<script>
+    const bulb = document.getElementById("bulb")
+    const khol = document.getElementById("khol")
+    const banda = document.getElementById("banda")
+
+    khol.addEventListener("click",function() {
+        bulb.src ="https://www.w3schools.com/js/pic_bulbon.gif"
+        
+    })
+    // turn of
+    banda.addEventListener("click",function(){
+        bulb.src ="https://www.w3schools.com/js/pic_bulboff.gif"
+    })
+</script>
+</html>
