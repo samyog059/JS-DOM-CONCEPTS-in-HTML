@@ -1,25 +1,213 @@
-<html>
+<!doctype html>
+<html lang="en">
     <head>
-        <script>
-            function validateform(){
-                var name = document.myform.name.value;
-                var password = document.myform.password.value;
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Register</title>
+        <style>
+            :root {
+                --bg: #0f172a;
+                --panel: #111827;
+                --accent: #22d3ee;
+                --accent-strong: #06b6d4;
+                --error: #f43f5e;
+                --text: #e2e8f0;
+                --muted: #94a3b8;
+                --border: #1f2937;
+            }
 
-                if(name == null || name == ""){
-                    alert("Name can't be blank");
-                    return false;
-                } else if(password.length < 6){
-                    alert("Password must be at least 6 characters long.");
-                    return false;
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                font-family: "Segoe UI", Tahoma, sans-serif;
+                background: radial-gradient(circle at 20% 20%, rgba(34, 211, 238, 0.08), transparent 25%),
+                    radial-gradient(circle at 80% 0%, rgba(6, 182, 212, 0.1), transparent 22%),
+                    var(--bg);
+                color: var(--text);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 32px;
+            }
+
+            .card {
+                width: 100%;
+                max-width: 420px;
+                background: linear-gradient(135deg, rgba(34, 211, 238, 0.08), rgba(34, 211, 238, 0)), var(--panel);
+                border: 1px solid var(--border);
+                border-radius: 16px;
+                padding: 28px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+            }
+
+            h1 {
+                margin: 0 0 16px;
+                font-size: 26px;
+                letter-spacing: -0.02em;
+            }
+
+            p.lead {
+                margin: 0 0 24px;
+                color: var(--muted);
+                line-height: 1.6;
+            }
+
+            .field {
+                margin-bottom: 18px;
+            }
+
+            label {
+                display: block;
+                margin-bottom: 6px;
+                font-weight: 600;
+            }
+
+            input[type="text"],
+            input[type="password"] {
+                width: 100%;
+                padding: 12px;
+                border-radius: 10px;
+                border: 1px solid var(--border);
+                background: rgba(255, 255, 255, 0.02);
+                color: var(--text);
+                outline: none;
+                transition: border-color 0.2s, box-shadow 0.2s;
+            }
+
+            input[type="text"]:focus,
+            input[type="password"]:focus {
+                border-color: var(--accent);
+                box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15);
+            }
+
+            .hint {
+                color: var(--muted);
+                font-size: 13px;
+                margin-top: 6px;
+            }
+
+            .error {
+                color: var(--error);
+                font-size: 13px;
+                margin-top: 6px;
+            }
+
+            .actions {
+                margin-top: 8px;
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+
+            button {
+                cursor: pointer;
+                border: none;
+                padding: 12px 16px;
+                border-radius: 10px;
+                font-weight: 700;
+                letter-spacing: 0.01em;
+                transition: transform 0.1s ease, box-shadow 0.2s ease;
+            }
+
+            .primary {
+                background: linear-gradient(120deg, var(--accent), var(--accent-strong));
+                color: #0b1120;
+                box-shadow: 0 12px 30px rgba(34, 211, 238, 0.3);
+            }
+
+            .primary:active {
+                transform: translateY(1px);
+            }
+
+            .ghost {
+                background: transparent;
+                color: var(--muted);
+                border: 1px solid var(--border);
+            }
+
+            .success {
+                margin-top: 12px;
+                color: #22c55e;
+                font-weight: 600;
+            }
+        </style>
+        <script>
+            function validateForm(event) {
+                event.preventDefault();
+
+                const form = event.target;
+                const nameInput = form.elements.name;
+                const passwordInput = form.elements.password;
+                const errorName = document.getElementById("error-name");
+                const errorPassword = document.getElementById("error-password");
+                const success = document.getElementById("success-message");
+
+                errorName.textContent = "";
+                errorPassword.textContent = "";
+                success.textContent = "";
+
+                const name = nameInput.value.trim();
+                const password = passwordInput.value;
+
+                let hasError = false;
+
+                if (!name) {
+                    errorName.textContent = "Please enter your name.";
+                    hasError = true;
+                }
+
+                if (password.length < 8) {
+                    errorPassword.textContent = "Password must be at least 8 characters.";
+                    hasError = true;
+                } else if (!/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+                    errorPassword.textContent = "Include at least one capital letter and one number.";
+                    hasError = true;
+                }
+
+                if (!hasError) {
+                    success.textContent = "Looks good! Submitting...";
+                    form.submit();
                 }
             }
+
+            window.addEventListener("DOMContentLoaded", () => {
+                const form = document.getElementById("register-form");
+                form.addEventListener("submit", validateForm);
+                form.addEventListener("input", () => {
+                    document.getElementById("success-message").textContent = "";
+                });
+            });
         </script>
     </head>
     <body>
-        <form name="myform" method="post" action="abc.jsp" onsubmit="return validateform()">
-            Name: <input type="text" name="name"> <br><br>
-            Password: <input type="password" name="password"> <br><br>
-            <input type="submit" value="Register">
-        </form>
+        <div class="card">
+            <h1>Create Account</h1>
+            <p class="lead">A client-side validation form.</p>
+            <form id="register-form" name="myform" method="post" action="abc.jsp">
+                <div class="field">
+                    <label for="name">Name</label>
+                    <input id="name" type="text" name="name" autocomplete="name" aria-describedby="error-name name-hint" required>
+                    <div id="name-hint" class="hint">Use the name you want displayed.</div>
+                    <div id="error-name" class="error" aria-live="polite"></div>
+                </div>
+
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input id="password" type="password" name="password" autocomplete="new-password" aria-describedby="error-password password-hint" required>
+                    <div id="password-hint" class="hint">At least 8 characters, include a capital letter and a number.</div>
+                    <div id="error-password" class="error" aria-live="polite"></div>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" class="primary">Register</button>
+                    <button type="reset" class="ghost" onclick="document.getElementById('success-message').textContent = ''">Reset</button>
+                </div>
+                <div id="success-message" class="success" aria-live="polite"></div>
+            </form>
+        </div>
     </body>
 </html>
