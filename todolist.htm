@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>To Do List</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      margin-top: 50px;
+    }
+    input {
+      padding: 10px;
+    }
+    button {
+      padding: 10px;
+    }
+    li {
+      margin: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>To-Do List</h2>
+  <input type="text" id="task" placeholder="New Task">
+  <button onclick="addTask()">Add</button>
+
+  <ul id="list"></ul>
+
+  <script>
+    function addTask() {
+      const taskInput = document.getElementById("task");
+      const taskValue = taskInput.value;
+
+      if (taskValue === "") {
+        alert("Please enter a task");
+        return;
+      }
+
+      const li = document.createElement("li");
+      li.innerText = taskValue;
+
+      li.onclick = function () {
+        li.remove();
+      };
+
+      document.getElementById("list").appendChild(li);
+      taskInput.value = "";
+    }
+  </script>
+
+</body>
+</html>
