@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --grid: #1f2937;
+      --line: #475569;
+      --accent: #f59e0b;
+      --accent-2: #38bdf8;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --win: #22c55e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 20% 20%, #111827, #0b1224 40%, #0a1020 80%);
+      color: var(--text);
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      letter-spacing: 0.2px;
+    }
+    .shell {
+      width: min(480px, 92vw);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px 20px 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .turn {
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      background: var(--grid);
+      padding: 10px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+    }
+    .cell {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: var(--text);
+      cursor: pointer;
+      transition: transform 0.1s ease, border-color 0.2s ease, background 0.2s ease;
+      user-select: none;
+    }
+    .cell:hover { transform: translateY(-2px); border-color: var(--accent); }
+    .cell:active { transform: translateY(0); }
+    .cell.x { color: var(--accent); }
+    .cell.o { color: var(--accent-2); }
+    .cell.winner { background: rgba(34, 197, 94, 0.08); border-color: var(--win); box-shadow: 0 0 0 1px var(--win) inset; }
+    .board-disabled .cell { cursor: not-allowed; opacity: 0.75; }
+    .status {
+      margin: 16px 0 12px;
+      font-size: 0.98rem;
+      color: var(--text);
+      min-height: 22px;
+    }
+    .controls { display: flex; gap: 8px; }
+    button {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    button:hover { border-color: var(--accent-2); box-shadow: 0 10px 30px rgba(56, 189, 248, 0.2); }
+    button:active { transform: translateY(1px); }
+    @media (max-width: 420px) {
+      h1 { font-size: 1.05rem; }
+      .cell { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <h1>Tic Tac Toe</h1>
+      <div class="turn" data-turn>Turn: X</div>
+    </header>
+
+    <div class="grid" data-grid>
+      <div class="cell" data-cell data-index="0"></div>
+      <div class="cell" data-cell data-index="1"></div>
+      <div class="cell" data-cell data-index="2"></div>
+      <div class="cell" data-cell data-index="3"></div>
+      <div class="cell" data-cell data-index="4"></div>
+      <div class="cell" data-cell data-index="5"></div>
+      <div class="cell" data-cell data-index="6"></div>
+      <div class="cell" data-cell data-index="7"></div>
+      <div class="cell" data-cell data-index="8"></div>
+    </div>
+
+    <div class="status" data-status></div>
+    <div class="controls">
+      <button type="button" data-reset>New Round</button>
+      <button type="button" data-swap>Swap First Player</button>
+    </div>
+  </div>
+
+  <script>
+    const grid = document.querySelector('[data-grid]');
+    const cells = Array.from(document.querySelectorAll('[data-cell]'));
+    const status = document.querySelector('[data-status]');
+    const turnLabel = document.querySelector('[data-turn]');
+    const resetBtn = document.querySelector('[data-reset]');
+    const swapBtn = document.querySelector('[data-swap]');
+
+    const wins = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+
+    let board = Array(9).fill('');
+    let currentPlayer = 'X';
+    let locked = false;
+
+    function setTurnText() {
+      turnLabel.textContent = `Turn: ${currentPlayer}`;
+    }
+
+    function announce(message) {
+      status.textContent = message;
+    }
+
+    function checkWinner() {
+      for (const combo of wins) {
+        const [a, b, c] = combo;
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+          return { winner: board[a], combo };
+        }
+      }
+      return board.every(Boolean) ? { winner: 'draw', combo: [] } : null;
+    }
+
+    function endRound(outcome) {
+      locked = true;
+      grid.classList.add('board-disabled');
+      if (outcome.winner === 'draw') {
+        announce('Draw! No moves left.');
+        return;
+      }
+      announce(`${outcome.winner} wins!`);
+      outcome.combo.forEach(i => cells[i].classList.add('winner'));
+    }
+
+    function handleCellClick(event) {
+      if (locked) return;
+      const cell = event.currentTarget;
+      const idx = Number(cell.dataset.index);
+      if (board[idx]) return;
+
+      board[idx] = currentPlayer;
+      cell.textContent = currentPlayer;
+      cell.classList.add(currentPlayer.toLowerCase());
+
+      const outcome = checkWinner();
+      if (outcome) {
+        endRound(outcome);
+      } else {
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        setTurnText();
+      }
+    }
+
+    function resetBoard(swapStarter = false) {
+      board = Array(9).fill('');
+      locked = false;
+      grid.classList.remove('board-disabled');
+      cells.forEach(cell => {
+        cell.textContent = '';
+        cell.classList.remove('x', 'o', 'winner');
+      });
+      if (swapStarter) currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      setTurnText();
+      announce('');
+    }
+
+    cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+    resetBtn.addEventListener('click', () => resetBoard(false));
+    swapBtn.addEventListener('click', () => resetBoard(true));
+
+    setTurnText();
+  </script>
+</body>
+</html>
