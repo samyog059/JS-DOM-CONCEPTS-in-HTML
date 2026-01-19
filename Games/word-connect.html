@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Word Connect</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --panel: #ffffff;
+      --primary: #2563eb;
+      --primary-strong: #1d4ed8;
+      --text: #0f172a;
+      --muted: #6b7280;
+      --accent: #22c55e;
+      --error: #ef4444;
+      --shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      background: radial-gradient(circle at 20% 20%, #dbeafe 0, #f6f8fb 35%, #eef2ff 100%);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .game {
+      width: min(960px, 100%);
+      background: var(--panel);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 26px;
+      letter-spacing: 0.4px;
+    }
+
+    .score {
+      padding: 12px 16px;
+      background: #eff6ff;
+      color: var(--primary);
+      border-radius: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .board {
+      margin: 22px 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+      gap: 12px;
+    }
+
+    .letter {
+      background: #eef2ff;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      padding: 16px 12px;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+      box-shadow: 0 6px 12px rgba(37, 99, 235, 0.08);
+    }
+
+    .letter:hover { transform: translateY(-2px); }
+    .letter.active {
+      background: #e0f2fe;
+      border-color: var(--primary);
+      box-shadow: 0 10px 18px rgba(37, 99, 235, 0.18);
+      color: var(--primary-strong);
+    }
+
+    .status {
+      padding: 14px;
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .current-word { font-size: 20px; font-weight: 700; letter-spacing: 1.5px; }
+    .message { color: var(--muted); font-weight: 600; }
+
+    .controls { margin-top: 18px; display: flex; gap: 12px; flex-wrap: wrap; }
+
+    button.action {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
+      color: #fff;
+    }
+
+    .submit { background: var(--primary); }
+    .submit:hover { background: var(--primary-strong); transform: translateY(-1px); }
+    .reset { background: #94a3b8; }
+    .reset:hover { background: #64748b; transform: translateY(-1px); }
+    .new-letters { background: #10b981; }
+    .new-letters:hover { background: #059669; transform: translateY(-1px); }
+
+    @media (max-width: 640px) {
+      h1 { font-size: 22px; }
+      .board { grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); }
+      .letter { font-size: 20px; }
+      .current-word { font-size: 18px; }
+      .game { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="game">
+    <div class="top-bar">
+      <h1>Word Connect</h1>
+      <div class="score">Score: <span id="score">0</span></div>
+    </div>
+
+    <div id="board" class="board" aria-label="Letter board"></div>
+
+    <div class="status">
+      <div class="current-word" id="currentWord">&nbsp;</div>
+      <div class="message" id="message">Tap letters to build a word.</div>
+    </div>
+
+    <div class="controls">
+      <button class="action submit" id="submitBtn">Submit</button>
+      <button class="action reset" id="resetBtn">Reset</button>
+      <button class="action new-letters" id="newLettersBtn">New Letters</button>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const boardEl = document.getElementById("board");
+      const currentWordEl = document.getElementById("currentWord");
+      const messageEl = document.getElementById("message");
+      const scoreEl = document.getElementById("score");
+      const submitBtn = document.getElementById("submitBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const newLettersBtn = document.getElementById("newLettersBtn");
+
+      const dictionary = new Set([
+        "code", "coder", "codes", "stone", "tones", "note", "tone", "node", "done", "react", "trace", "crate", "cater", "caret", "heart", "earth", "hater", "later", "alert", "alter", "stare", "rates", "tears", "pear", "pare", "rape", "bear", "bare", "bore", "robe", "road", "roam", "dare", "read", "dear", "lead", "deal", "plea", "pale", "leap", "pearl", "learn", "renal", "panel", "plane", "alone", "pearl", "near", "earn", "gear", "rage", "grab", "brag", "brain", "rain", "train", "trail", "trial", "ratio", "radio", "car", "bar", "arc", "jar", "star", "start", "tart", "rats", "arts", "tsar"
+      ]);
+
+      const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+      const selection = [];
+      const usedWords = new Set();
+      let score = 0;
+
+      const updateWordDisplay = () => {
+        const word = selection.map(item => item.letter).join("");
+        currentWordEl.textContent = word || "\u00a0";
+      };
+
+      const setMessage = (text, type = "info") => {
+        const colors = { info: "var(--muted)", success: "var(--accent)", error: "var(--error)" };
+        messageEl.style.color = colors[type] || colors.info;
+        messageEl.textContent = text;
+      };
+
+      const clearSelection = () => {
+        selection.length = 0;
+        document.querySelectorAll(".letter.active").forEach(btn => btn.classList.remove("active"));
+        updateWordDisplay();
+      };
+
+      const generateLetters = (count = 10) => {
+        boardEl.innerHTML = "";
+        clearSelection();
+        const letters = Array.from({ length: count }, () => alphabet[Math.floor(Math.random() * alphabet.length)]);
+        letters.forEach((letter, idx) => {
+          const btn = document.createElement("button");
+          btn.className = "letter";
+          btn.textContent = letter;
+          btn.dataset.id = `${Date.now()}-${idx}`;
+          btn.addEventListener("click", () => toggleLetter(btn));
+          boardEl.appendChild(btn);
+        });
+        setMessage("Tap letters to build a word.");
+      };
+
+      const toggleLetter = (btn) => {
+        const id = btn.dataset.id;
+        const letter = btn.textContent;
+        const activeIdx = selection.findIndex(item => item.id === id);
+        if (activeIdx !== -1) {
+          selection.splice(activeIdx, 1);
+          btn.classList.remove("active");
+        } else {
+          selection.push({ id, letter });
+          btn.classList.add("active");
+        }
+        updateWordDisplay();
+      };
+
+      const submitWord = () => {
+        const word = selection.map(item => item.letter).join("").toLowerCase();
+        if (!word) {
+          setMessage("Pick some letters first.", "error");
+          return;
+        }
+        if (usedWords.has(word)) {
+          setMessage("You already used that word.", "error");
+          return;
+        }
+        if (dictionary.has(word)) {
+          usedWords.add(word);
+          score += Math.max(10, word.length * 2);
+          scoreEl.textContent = score;
+          setMessage(`Nice! "${word.toUpperCase()}" is valid.`, "success");
+          clearSelection();
+        } else {
+          setMessage(`"${word.toUpperCase()}" is not in the dictionary.`, "error");
+        }
+      };
+
+      submitBtn.addEventListener("click", submitWord);
+      resetBtn.addEventListener("click", clearSelection);
+      newLettersBtn.addEventListener("click", () => generateLetters());
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") submitWord();
+        if (e.key === "Escape") clearSelection();
+      });
+
+      generateLetters();
+    })();
+  </script>
+</body>
+</html>
