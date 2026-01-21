@@ -1,0 +1,95 @@
+body {
+        font-family: Arial;
+        background: linear-gradient(135deg, #00ffcc, #dd2476);
+        color:whitesmoke;
+        h1{
+            text-align: center;
+            color:black;
+        }
+    }
+#level{
+            padding: 10px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #ff512f, #dd2476);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    display: inline-block;
+     }
+     #player{
+             font-size: 20px;
+             font-weight: bold;
+             text-align: center;
+            color: #00ffcc;
+             animation: blinkTurn 1s infinite;
+}
+
+@keyframes blinkTurn {
+    0%   { opacity: 1; }
+    50%  { opacity: 0; }
+    100% { opacity: 1; }
+}
+  #controls button {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    border: 2px solid #00c3ff; /* subtle border */
+    border-radius: 8px;
+    background: #000; /* black background */
+    color: #00c3ff; /* blue text */
+    cursor: pointer;
+    transition: 0.3s;
+    text-align: right;
+}
+
+#controls button:hover {
+    background: #00c3ff; /* fill with blue on hover */
+    color: #000;          /* text turns black */
+    transform: scale(1.05); /* slight zoom */
+}
+#scoreboard{
+        position: fixed;
+           bottom : 50px;
+    right: 20px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    text-align: center;
+}
+
+#scoreboard table {
+    border-collapse: collapse;
+    width: 200px;
+}
+
+#scoreboard th, #scoreboard td {
+    border: 1px solid white;
+    padding: 6px;
+}
+
+#scoreboard th {
+    background: #00c3ff;
+}
+#wordInput {
+    width: 250px;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 2px solid #00c3ff; /* subtle blue border */
+    border-radius: 8px;
+    outline: none;
+    text-align: center;
+    transition: 0.2s;
+}
+
+#wordInput:focus {
+    border-color: #00ffcc; /* changes color slightly when active */
+    box-shadow: 0 0 5px #00ffcc; /* subtle glow on focus */
+}
+
+#wordInput::placeholder {
+    color: #a0a0a0; /* light gray placeholder */
+}

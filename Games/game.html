@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Word Making Game</title>
+<link rel="stylesheet" href="game.css">
+</head>
+<body>
+
+<h1>Computer Word Making Game</h1>
+
+<div id="level">Level: Easy</div>
+<div id="player">Player 1's Turn</div>
+<div id="letters"></div>
+
+<input type="text" id="wordInput" placeholder="Type a word">
+<div id="controls">
+<button onclick="submitWord()"> ✅ Submit</button>
+<button onclick="shuffleLetters()"> 🔀 Shuffle Letters</button>
+<button onclick="showHint()"> 💡Hint</button>
+</div>
+<div id="message"></div>
+
+<div id="scoreboard">
+<h3> 🏅Score Board</h3>
+<table>
+    <tr>
+        <th> Player </th>
+        <th> Score</th>
+        <th> Level</th>
+    </tr>
+    <tr>
+        <td id="P1Name"> Player 1 </td>
+        <td id="score1">0</td>
+        <td id="p1Level"> Easy</td>
+    </tr>
+    <tr>
+            <td id="p2Name">Player 2</td>
+            <td id="score2">0</td>
+            <td id="p2Level">Easy</td>
+        </tr>
+</table>
+</div>
+
+
+<div style="margin-top:20px;">
+Level:
+<button onclick="setLevel('Easy')">Easy</button>
+<button onclick="setLevel('Medium')">Medium</button>
+<button onclick="setLevel('Hard')">Hard</button>
+</div>
+<script src="game.js"></script>
+</body>
+</html>
