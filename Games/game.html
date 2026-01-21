@@ -6,49 +6,89 @@
 <link rel="stylesheet" href="game.css">
 </head>
 <body>
+    <div class="bg-orbs">
+        <span class="orb orb-1"></span>
+        <span class="orb orb-2"></span>
+        <span class="orb orb-3"></span>
+    </div>
 
-<h1>Computer Word Making Game</h1>
+    <main class="shell">
+        <header class="hero">
+            <div>
+                <p class="eyebrow">Word Forge</p>
+                <h1>Build the word before time melts away.</h1>
+                <p class="sub">Tap, shuffle, and race your friend. Every correct word adds time and boosts your streak multiplier.</p>
+            </div>
+            <div class="levels" id="levels">
+                <button class="pill active" data-level="Easy">Easy</button>
+                <button class="pill" data-level="Medium">Medium</button>
+                <button class="pill" data-level="Hard">Hard</button>
+            </div>
+        </header>
 
-<div id="level">Level: Easy</div>
-<div id="player">Player 1's Turn</div>
-<div id="letters"></div>
+        <section class="layout">
+            <div class="card letters-card">
+                <div class="card-head">
+                    <div class="badge" id="level">Level: Easy</div>
+                    <div class="badge ghost" id="player">Player 1's Turn</div>
+                </div>
+                <div id="letters" class="letters" aria-live="polite"></div>
+                <div class="hint-row">
+                    <div class="hint" id="hint">Hint appears here.</div>
+                    <button class="ghost-btn" id="shuffleBtn">🔀 Shuffle</button>
+                </div>
+            </div>
 
-<input type="text" id="wordInput" placeholder="Type a word">
-<div id="controls">
-<button onclick="submitWord()"> ✅ Submit</button>
-<button onclick="shuffleLetters()"> 🔀 Shuffle Letters</button>
-<button onclick="showHint()"> 💡Hint</button>
-</div>
-<div id="message"></div>
+            <div class="card play-card">
+                <div class="stats">
+                    <div>
+                        <p class="label">Timer</p>
+                        <div class="timer">
+                            <div class="timer-bar" id="timerBar"></div>
+                            <span id="timerText">00</span>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="label">Score</p>
+                        <p class="stat" id="totalScore">0</p>
+                    </div>
+                    <div>
+                        <p class="label">Streak</p>
+                        <p class="stat" id="streak">x1</p>
+                    </div>
+                    <div>
+                        <p class="label">Words</p>
+                        <p class="stat" id="wordsSolved">0</p>
+                    </div>
+                </div>
 
-<div id="scoreboard">
-<h3> 🏅Score Board</h3>
-<table>
-    <tr>
-        <th> Player </th>
-        <th> Score</th>
-        <th> Level</th>
-    </tr>
-    <tr>
-        <td id="P1Name"> Player 1 </td>
-        <td id="score1">0</td>
-        <td id="p1Level"> Easy</td>
-    </tr>
-    <tr>
-            <td id="p2Name">Player 2</td>
-            <td id="score2">0</td>
-            <td id="p2Level">Easy</td>
-        </tr>
-</table>
-</div>
+                <label class="input-label" for="wordInput">Type your word</label>
+                <div class="input-row">
+                    <input type="text" id="wordInput" placeholder="Type here and press Enter">
+                    <button class="primary" id="submitBtn">✅ Submit</button>
+                </div>
+                <div class="actions">
+                    <button class="glass" id="hintBtn">💡 Hint</button>
+                    <button class="glass" id="newWordBtn">⏭️ New Word</button>
+                    <button class="glass" id="resetBtn">♻️ Reset Turn</button>
+                </div>
+                <p class="message" id="message">Tap letters or type directly.</p>
 
+                <div class="scoreboard" aria-label="Score board">
+                    <div class="row head">
+                        <span>Player</span><span>Score</span><span>Level</span>
+                    </div>
+                    <div class="row">
+                        <span id="P1Name">Player 1</span><span id="score1">0</span><span id="p1Level">Easy</span>
+                    </div>
+                    <div class="row">
+                        <span id="p2Name">Player 2</span><span id="score2">0</span><span id="p2Level">Easy</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-<div style="margin-top:20px;">
-Level:
-<button onclick="setLevel('Easy')">Easy</button>
-<button onclick="setLevel('Medium')">Medium</button>
-<button onclick="setLevel('Hard')">Hard</button>
-</div>
-<script src="game.js"></script>
+    <script src="game.js"></script>
 </body>
 </html>
