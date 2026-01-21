@@ -269,3 +269,5 @@ body {
 .overlay .primary { width: 100%; text-align: center; }
 
 .overlay .hint { color: var(--muted); margin: 10px 0 0; }
+
+.hidden { display: none !important; }

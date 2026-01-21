@@ -68,6 +68,10 @@ const levelEls = [document.getElementById("p1Level"), document.getElementById("p
 const totalScoreEl = document.getElementById("totalScore");
 const streakEl = document.getElementById("streak");
 const wordsSolvedEl = document.getElementById("wordsSolved");
+const introEl = document.getElementById("intro");
+const startBtn = document.getElementById("startBtn");
+const levelPillsMain = document.querySelectorAll("#levels .pill");
+const levelPillsOverlay = document.querySelectorAll("#overlayLevels .pill");
 
 let level = "Easy";
 let levelWords = [];
@@ -85,6 +89,23 @@ let timeLeft = ROUND_TIME[level];
 const shuffleArray = (arr) => arr.sort(() => Math.random() - 0.5);
 
 const normalize = (text) => text.replace(/\s+/g, "").toLowerCase();
+
+function setLevelSelection(nextLevel) {
+    level = nextLevel;
+    document.querySelectorAll("#levels .pill, #overlayLevels .pill").forEach((btn) => {
+        if (btn.dataset.level === level) btn.classList.add("active");
+        else btn.classList.remove("active");
+    });
+}
+
+function resetStateForNewGame() {
+    scores = [0, 0];
+    turn = 1;
+    streak = 1;
+    wordsSolved = 0;
+    playerEl.innerText = "Player 1's Turn";
+    updateScore();
+}
 
 function startGame() {
     levelWords = [...levelPool[level]];
@@ -241,20 +262,24 @@ function bindUI() {
     wordInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter") submitWord();
     });
-    document.querySelectorAll("#levels .pill").forEach((btn) => {
+    levelPillsOverlay.forEach((btn) => {
+        btn.addEventListener("click", () => setLevelSelection(btn.dataset.level));
+    });
+
+    levelPillsMain.forEach((btn) => {
         btn.addEventListener("click", () => {
-            document.querySelectorAll("#levels .pill").forEach((b) => b.classList.remove("active"));
-            btn.classList.add("active");
-            level = btn.dataset.level;
-            streak = 1;
-            turn = 1;
-            scores = [0, 0];
-            updateScore();
-            playerEl.innerText = "Player 1's Turn";
+            setLevelSelection(btn.dataset.level);
+            resetStateForNewGame();
             startGame();
         });
+    });
+
+    startBtn.addEventListener("click", () => {
+        introEl.classList.add("hidden");
+        resetStateForNewGame();
+        startGame();
+        wordInput.focus();
     });
 }
 
 bindUI();
-startGame();
