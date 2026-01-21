@@ -237,3 +237,35 @@ body {
     .levels { width: 100%; }
     .pill { flex: 1; text-align: center; }
 }
+
+/* Intro overlay */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 6, 15, 0.92);
+    display: grid;
+    place-items: center;
+    z-index: 5;
+    backdrop-filter: blur(6px);
+}
+
+.overlay-card {
+    width: min(520px, 92vw);
+    background: var(--panel);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    padding: 28px;
+    text-align: left;
+}
+
+.overlay-card h2 { margin: 10px 0 8px; font-size: 26px; }
+.overlay-card .sub { margin-bottom: 16px; }
+
+.overlay-actions { display: flex; flex-direction: column; gap: 12px; }
+.overlay .levels { justify-content: flex-start; }
+.overlay .pill { flex: none; }
+
+.overlay .primary { width: 100%; text-align: center; }
+
+.overlay .hint { color: var(--muted); margin: 10px 0 0; }
