@@ -85,6 +85,7 @@ let streak = 1;
 let wordsSolved = 0;
 let timerId = null;
 let timeLeft = ROUND_TIME[level];
+let hintUsed = false;
 
 const shuffleArray = (arr) => arr.sort(() => Math.random() - 0.5);
 
@@ -126,9 +127,10 @@ function startRound() {
     currentMeaning = pick.meaning;
     currentLetters = pick.word.replace(/\s+/g, "").toUpperCase().split("");
     selected = [];
+    hintUsed = false;
     wordInput.value = "";
     renderLetters();
-    showHint(true);
+    hintEl.innerText = "Hint hidden. Tap 💡 for a clue.";
     restartTimer();
 }
 
@@ -167,7 +169,10 @@ function shuffleLetters() {
 function showHint(initial = false) {
     const masked = currentWord[0].toUpperCase() + "_".repeat(normalize(currentWord).length - 1);
     hintEl.innerText = `${masked} · ${currentMeaning}`;
-    if (!initial) pulse(hintEl, "Hint shown");
+    if (!initial) {
+        hintUsed = true;
+        pulse(hintEl, "Hint shown (50% score penalty this word)");
+    }
 }
 
 function submitWord() {
@@ -180,10 +185,12 @@ function submitWord() {
         const base = currentWord.length + (level === "Hard" ? 4 : level === "Medium" ? 2 : 1);
         const bonus = Math.max(1, 1 + (streak - 1) * 0.25);
         const gained = Math.round(base * bonus);
-        scores[turn - 1] += gained;
+        const netGain = hintUsed ? Math.max(1, Math.round(gained * 0.5)) : gained;
+        scores[turn - 1] += netGain;
         streak += 1;
         wordsSolved += 1;
-        setMessage(`Great! +${gained} points`, "success");
+        const penaltyNote = hintUsed ? " (50% hint penalty applied)" : "";
+        setMessage(`Great! +${netGain} points${penaltyNote}`, "success");
         updateScore();
         switchTurn();
         startRound();
