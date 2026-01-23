@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>YouTube Clone Demo</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			--bg: #0f1115;
+			--panel: #16181d;
+			--text: #f8fafc;
+			--muted: #9ca3af;
+			--accent: #f87171;
+			--chip: #1f2229;
+			--border: #1f2933;
+		}
+		* { box-sizing: border-box; }
+		body {
+			margin: 0;
+			background: var(--bg);
+			color: var(--text);
+			font-family: 'Manrope', 'Segoe UI', sans-serif;
+			display: grid;
+			grid-template-columns: 240px 1fr;
+			min-height: 100vh;
+		}
+		@media (max-width: 920px) {
+			body { grid-template-columns: 72px 1fr; }
+			.nav-label { display: none; }
+		}
+		@media (max-width: 720px) {
+			body { grid-template-columns: 1fr; }
+			aside { position: fixed; inset: 0 60% 0 0; background: var(--panel); transform: translateX(-100%); transition: transform 0.2s ease; z-index: 9; }
+			aside.open { transform: translateX(0); }
+			#backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); opacity: 0; pointer-events: none; transition: opacity 0.2s ease; z-index: 8; }
+			#backdrop.show { opacity: 1; pointer-events: auto; }
+		}
+		aside {
+			background: var(--panel);
+			border-right: 1px solid var(--border);
+			padding: 12px 8px;
+		}
+		.nav-item {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 10px 12px;
+			border-radius: 10px;
+			color: var(--text);
+			cursor: pointer;
+			transition: background 0.12s ease;
+		}
+		.nav-item:hover, .nav-item.active { background: #1f232d; }
+		.nav-icon { width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; }
+		header {
+			grid-column: 2 / 3;
+			position: sticky;
+			top: 0;
+			z-index: 5;
+			background: var(--bg);
+			border-bottom: 1px solid var(--border);
+			padding: 8px 16px;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+		.logo { display: flex; align-items: center; gap: 8px; font-weight: 800; letter-spacing: -0.02em; }
+		.logo-dot { width: 26px; height: 18px; border-radius: 6px; background: linear-gradient(135deg, #ef4444, #fbbf24); display: inline-block; }
+		.search-bar { flex: 1; display: flex; gap: 8px; }
+		.search-bar input {
+			flex: 1;
+			background: var(--panel);
+			border: 1px solid var(--border);
+			color: var(--text);
+			border-radius: 999px;
+			padding: 10px 14px;
+			font-size: 14px;
+		}
+		.search-bar button { border: 1px solid var(--border); background: #1f232d; color: var(--text); border-radius: 999px; padding: 10px 14px; cursor: pointer; }
+		.actions { display: flex; align-items: center; gap: 10px; }
+		.avatar { width: 34px; height: 34px; border-radius: 50%; background: #facc15; display: grid; place-items: center; color: #0f1115; font-weight: 700; }
+		.filter-row { padding: 10px 16px; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: thin; }
+		.chip {
+			background: var(--chip);
+			color: var(--text);
+			border: 1px solid var(--border);
+			border-radius: 16px;
+			padding: 8px 12px;
+			font-weight: 600;
+			cursor: pointer;
+			white-space: nowrap;
+		}
+		.chip.active { background: #f3f4f6; color: #0f1115; }
+		main { grid-column: 2 / 3; }
+		.grid { padding: 6px 16px 24px; display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+		.card { background: var(--panel); border-radius: 14px; overflow: hidden; border: 1px solid var(--border); }
+		.thumb { position: relative; background: #111; padding-top: 56.25%; }
+		.thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+		.duration { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); color: #fff; padding: 3px 6px; border-radius: 6px; font-size: 12px; }
+		.card-body { padding: 10px; display: grid; grid-template-columns: 36px 1fr; gap: 8px; }
+		.channel { width: 36px; height: 36px; border-radius: 50%; background: #1f232d; display: grid; place-items: center; font-weight: 700; }
+		.title { margin: 0 0 6px; font-size: 15px; line-height: 1.3; }
+		.meta { color: var(--muted); font-size: 13px; line-height: 1.4; }
+		.menu-btn { display: none; border: none; background: #1f232d; color: var(--text); border-radius: 8px; padding: 8px; cursor: pointer; }
+		@media (max-width: 720px) { .menu-btn { display: inline-flex; } header { grid-column: 1 / -1; } main { grid-column: 1 / -1; } }
+	</style>
+</head>
+<body>
+	<aside id="sidebar">
+		<div class="nav-item active"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></div>
+		<div class="nav-item"><span class="nav-icon">🔥</span><span class="nav-label">Trending</span></div>
+		<div class="nav-item"><span class="nav-icon">🎵</span><span class="nav-label">Music</span></div>
+		<div class="nav-item"><span class="nav-icon">🎮</span><span class="nav-label">Gaming</span></div>
+		<div class="nav-item"><span class="nav-icon">🧑‍🎓</span><span class="nav-label">Learning</span></div>
+		<div class="nav-item"><span class="nav-icon">📰</span><span class="nav-label">News</span></div>
+		<div class="nav-item"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></div>
+	</aside>
+
+	<div id="backdrop"></div>
+
+	<header>
+		<button class="menu-btn" id="menu-btn">☰</button>
+		<div class="logo"><span class="logo-dot"></span><span>UTune</span></div>
+		<div class="search-bar">
+			<input id="search" placeholder="Search">
+			<button id="search-btn">🔍</button>
+		</div>
+		<div class="actions">
+			<button class="menu-btn" title="Upload">⤴</button>
+			<button class="menu-btn" title="Alerts">🔔</button>
+			<div class="avatar">U</div>
+		</div>
+	</header>
+
+	<main>
+		<div class="filter-row" id="chips"></div>
+		<div class="grid" id="grid"></div>
+	</main>
+
+	<script>
+		const categories = ['All', 'Music', 'Gaming', 'Learning', 'News', 'Tech', 'Comedy', 'Travel'];
+		const videos = [
+			{ title: 'Lo-fi beats to relax/study to', channel: 'Chillhop', views: '3.2M views • 3 weeks ago', duration: '3:12:45', thumb: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80', category: 'Music' },
+			{ title: 'Top 10 Elden Ring builds you should try', channel: 'GameScout', views: '812K views • 1 month ago', duration: '18:10', thumb: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80', category: 'Gaming' },
+			{ title: 'JavaScript in 100 seconds', channel: 'CodeFast', views: '1.1M views • 2 days ago', duration: '1:40', thumb: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=900&q=80', category: 'Tech' },
+			{ title: 'Daily world news recap', channel: 'GlobeNow', views: '620K views • 5 hours ago', duration: '12:05', thumb: 'https://images.unsplash.com/photo-1522199710521-72d69614c702?auto=format&fit=crop&w=900&q=80', category: 'News' },
+			{ title: 'How to cook the perfect ramen', channel: 'KitchenPro', views: '540K views • 2 weeks ago', duration: '9:58', thumb: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80', category: 'Learning' },
+			{ title: '24 hours in Tokyo', channel: 'Wanderlust', views: '2.3M views • 1 year ago', duration: '15:44', thumb: 'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=900&q=80', category: 'Travel' },
+			{ title: 'Try not to laugh challenge', channel: 'FunBox', views: '4.7M views • 3 months ago', duration: '11:21', thumb: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80', category: 'Comedy' },
+			{ title: 'Math for machine learning: vectors', channel: 'EduCast', views: '220K views • 4 days ago', duration: '21:36', thumb: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=900&q=80', category: 'Learning' },
+			{ title: 'Building a custom keyboard', channel: 'SwitchLab', views: '330K views • 2 months ago', duration: '14:50', thumb: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80', category: 'Tech' }
+		];
+
+		const grid = document.getElementById('grid');
+		const chipsEl = document.getElementById('chips');
+		const searchInput = document.getElementById('search');
+		const searchBtn = document.getElementById('search-btn');
+		const sidebar = document.getElementById('sidebar');
+		const menuBtn = document.getElementById('menu-btn');
+		const backdrop = document.getElementById('backdrop');
+
+		let activeCategory = 'All';
+
+		function renderChips() {
+			chipsEl.innerHTML = '';
+			categories.forEach(cat => {
+				const chip = document.createElement('button');
+				chip.className = 'chip' + (cat === activeCategory ? ' active' : '');
+				chip.textContent = cat;
+				chip.addEventListener('click', () => {
+					activeCategory = cat;
+					renderChips();
+					renderGrid();
+				});
+				chipsEl.appendChild(chip);
+			});
+		}
+
+		function matchesSearch(video, term) {
+			if (!term) return true;
+			const t = term.toLowerCase();
+			return video.title.toLowerCase().includes(t) || video.channel.toLowerCase().includes(t) || video.category.toLowerCase().includes(t);
+		}
+
+		function renderGrid() {
+			const term = searchInput.value.trim();
+			const filtered = videos.filter(v => (activeCategory === 'All' || v.category === activeCategory) && matchesSearch(v, term));
+			grid.innerHTML = '';
+			if (!filtered.length) {
+				grid.innerHTML = '<p style="color: var(--muted);">No videos match your filters.</p>';
+				return;
+			}
+			filtered.forEach(v => {
+				const card = document.createElement('div');
+				card.className = 'card';
+				card.innerHTML = `
+					<div class="thumb">
+						<img src="${v.thumb}" alt="${v.title}">
+						<span class="duration">${v.duration}</span>
+					</div>
+					<div class="card-body">
+						<div class="channel">${v.channel[0]}</div>
+						<div>
+							<p class="title">${v.title}</p>
+							<p class="meta">${v.channel}</p>
+							<p class="meta">${v.views}</p>
+						</div>
+					</div>
+				`;
+				grid.appendChild(card);
+			});
+		}
+
+		function toggleSidebar(show) {
+			if (window.innerWidth > 720) return;
+			sidebar.classList.toggle('open', show);
+			backdrop.classList.toggle('show', show);
+		}
+
+		searchBtn.addEventListener('click', renderGrid);
+		searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') renderGrid(); });
+		menuBtn.addEventListener('click', () => toggleSidebar(!sidebar.classList.contains('open')));
+		backdrop.addEventListener('click', () => toggleSidebar(false));
+
+		renderChips();
+		renderGrid();
+	</script>
+</body>
+</html>
