@@ -145,6 +145,29 @@
 		.toolbar input, .toolbar select { width: auto; min-width: 180px; }
 		.small-btn { padding: 7px 10px; border-radius: 10px; font-weight: 600; font-size: 12px; }
 		.muted { color: var(--muted); font-size: 13px; }
+
+		/* Auth overlay */
+		.overlay {
+			position: fixed;
+			inset: 0;
+			display: grid;
+			place-items: center;
+			background: rgba(15, 23, 42, 0.76);
+			backdrop-filter: blur(6px);
+			z-index: 10;
+		}
+		.overlay.hidden { display: none; }
+		.login-card {
+			width: min(420px, 92vw);
+			background: var(--panel);
+			border: 1px solid var(--border);
+			border-radius: 18px;
+			padding: 22px;
+			box-shadow: var(--shadow);
+		}
+		.login-card h2 { margin: 0 0 10px; }
+		.login-card p { margin: 6px 0 14px; color: var(--muted); }
+		.session { display: flex; align-items: center; gap: 10px; }
 	</style>
 </head>
 <body>
@@ -154,6 +177,10 @@
 			<div>
 				<h1>Feedback Management</h1>
 				<p class="subtitle">Capture, triage, and close the loop with users in a single lightweight panel.</p>
+			</div>
+			<div class="session" style="margin-left:auto;">
+				<span class="badge success" id="user-badge"><span class="badge-dot"></span><span id="user-label">Guest</span></span>
+				<button class="small-btn ghost" id="logout-btn" type="button">Logout</button>
 			</div>
 		</div>
 	</header>
@@ -276,9 +303,31 @@
 		</section>
 	</main>
 
+	<div class="overlay" id="auth-overlay" role="dialog" aria-modal="true">
+		<div class="login-card">
+			<h2>Welcome back</h2>
+			<p>Use demo credentials or anything you like. Data stays in your browser.</p>
+			<form id="login-form">
+				<label for="login-name">Name</label>
+				<input id="login-name" name="login-name" placeholder="Product Lead" required>
+				<label for="login-email" style="margin-top:10px;">Email</label>
+				<input id="login-email" name="login-email" type="email" placeholder="demo@feedback.test" required>
+				<label for="login-password" style="margin-top:10px;">Password</label>
+				<input id="login-password" name="login-password" type="password" placeholder="demo123" required>
+				<div class="actions" style="margin-top:16px;">
+					<button class="primary" type="submit" id="login-submit">Login</button>
+					<button class="ghost" type="button" id="login-fill">Fill demo</button>
+				</div>
+			</form>
+			<p class="muted" style="margin-top:10px;">Hint: try demo@feedback.test / demo123</p>
+		</div>
+	</div>
+
 	<script>
 		const storageKey = 'feedback-demo-data';
+		const authKey = 'feedback-demo-user';
 		const state = { items: [], editingId: null };
+		const auth = { user: null };
 
 		const form = document.getElementById('feedback-form');
 		const formTitle = document.getElementById('form-title');
@@ -289,6 +338,15 @@
 		const sortSelect = document.getElementById('sort-by');
 		const seedBtn = document.getElementById('seed-btn');
 		const tableBody = document.getElementById('table-body');
+		const userBadge = document.getElementById('user-badge');
+		const userLabel = document.getElementById('user-label');
+		const logoutBtn = document.getElementById('logout-btn');
+		const overlay = document.getElementById('auth-overlay');
+		const loginForm = document.getElementById('login-form');
+		const loginFill = document.getElementById('login-fill');
+		const loginName = document.getElementById('login-name');
+		const loginEmail = document.getElementById('login-email');
+		const loginPassword = document.getElementById('login-password');
 
 		const statTotal = document.getElementById('stat-total');
 		const statOpen = document.getElementById('stat-open');
@@ -334,6 +392,33 @@
 		function load() {
 			const saved = localStorage.getItem(storageKey);
 			state.items = saved ? JSON.parse(saved) : demoSeed();
+			const savedUser = localStorage.getItem(authKey);
+			auth.user = savedUser ? JSON.parse(savedUser) : null;
+			updateAuthUI();
+		}
+
+		function setUser(user) {
+			auth.user = user;
+			localStorage.setItem(authKey, JSON.stringify(user));
+			updateAuthUI();
+		}
+
+		function clearUser() {
+			auth.user = null;
+			localStorage.removeItem(authKey);
+			updateAuthUI();
+		}
+
+		function updateAuthUI() {
+			if (auth.user) {
+				overlay.classList.add('hidden');
+				userLabel.textContent = auth.user.name || 'User';
+				logoutBtn.style.display = 'inline-flex';
+			} else {
+				overlay.classList.remove('hidden');
+				userLabel.textContent = 'Guest';
+				logoutBtn.style.display = 'none';
+			}
 		}
 
 		function persist() {
@@ -466,6 +551,27 @@
 				message: data.get('message').trim()
 			};
 			upsertFeedback(entry);
+		});
+
+		loginForm.addEventListener('submit', (e) => {
+			e.preventDefault();
+			if (!loginEmail.value || !loginPassword.value) return;
+			const user = {
+				name: loginName.value.trim() || 'User',
+				email: loginEmail.value.trim(),
+				lastLogin: Date.now()
+			};
+			setUser(user);
+		});
+
+		loginFill.addEventListener('click', () => {
+			loginName.value = 'Demo Admin';
+			loginEmail.value = 'demo@feedback.test';
+			loginPassword.value = 'demo123';
+		});
+
+		logoutBtn.addEventListener('click', () => {
+			clearUser();
 		});
 
 		resetBtn.addEventListener('click', resetForm);
