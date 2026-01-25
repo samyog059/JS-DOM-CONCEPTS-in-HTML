@@ -41,12 +41,25 @@ const menuItems = [
 
 const order = new Map(); // id -> { item, qty }
 
+const TAX_RATE = 0.08;
+const DELIVERY_FEE = 3.5;
+
 const menuGrid = document.getElementById('menuGrid');
 const orderList = document.getElementById('orderList');
 const orderTotal = document.getElementById('orderTotal');
+const subtotalEl = document.getElementById('subtotal');
+const taxEl = document.getElementById('tax');
+const deliveryEl = document.getElementById('deliveryFee');
 const statusSelect = document.getElementById('statusSelect');
 const statusChip = document.getElementById('statusChip');
 const submitOrder = document.getElementById('submitOrder');
+const clearOrderBtn = document.getElementById('clearOrder');
+
+const customerName = document.getElementById('customerName');
+const customerPhone = document.getElementById('customerPhone');
+const orderType = document.getElementById('orderType');
+const deliveryAddress = document.getElementById('deliveryAddress');
+const orderNotes = document.getElementById('orderNotes');
 
 const modal = document.getElementById('modal');
 const modalBody = document.getElementById('modalBody');
@@ -73,14 +86,14 @@ function renderMenu() {
 function renderOrder() {
   if (order.size === 0) {
     orderList.innerHTML = '<p class="muted">No items yet. Add something tasty!</p>';
-    orderTotal.textContent = '$0.00';
+    updateTotals(0);
     return;
   }
 
-  let total = 0;
+  let subtotal = 0;
   orderList.innerHTML = Array.from(order.values()).map(({ item, qty }) => {
     const line = item.price * qty;
-    total += line;
+    subtotal += line;
     return `
       <div class="order-item" data-id="${item.id}">
         <h4>${item.name}</h4>
@@ -94,7 +107,7 @@ function renderOrder() {
     `;
   }).join('');
 
-  orderTotal.textContent = `$${total.toFixed(2)}`;
+  updateTotals(subtotal);
 }
 
 function addToOrder(id) {
@@ -104,6 +117,17 @@ function addToOrder(id) {
   existing.qty += 1;
   order.set(id, existing);
   renderOrder();
+}
+
+function updateTotals(subtotal) {
+  const tax = subtotal * TAX_RATE;
+  const delivery = orderType.value === 'delivery' && subtotal > 0 ? DELIVERY_FEE : 0;
+  const total = subtotal + tax + delivery;
+
+  subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+  taxEl.textContent = `$${tax.toFixed(2)}`;
+  deliveryEl.textContent = `$${delivery.toFixed(2)}`;
+  orderTotal.textContent = `$${total.toFixed(2)}`;
 }
 
 function changeQty(id, delta) {
@@ -193,9 +217,44 @@ statusSelect.addEventListener('change', () => {
 });
 
 submitOrder.addEventListener('click', () => {
+  if (order.size === 0) {
+    alert('Add at least one item to finalize the order.');
+    return;
+  }
+
+  if (!customerName.value.trim()) {
+    alert('Please enter the customer name.');
+    customerName.focus();
+    return;
+  }
+
+  if (!customerPhone.value.trim()) {
+    alert('Please enter a phone number.');
+    customerPhone.focus();
+    return;
+  }
+
+  if (orderType.value === 'delivery' && !deliveryAddress.value.trim()) {
+    alert('Please add a delivery address.');
+    deliveryAddress.focus();
+    return;
+  }
+
   statusSelect.value = 'Delivered';
   statusChip.textContent = 'Status: Delivered';
-  alert('Order marked as Delivered. Great job!');
+  const summary = `Order for ${customerName.value} (${orderType.value})\nPhone: ${customerPhone.value}\nAddress: ${deliveryAddress.value || 'N/A'}\nNotes: ${orderNotes.value || 'N/A'}\n\nItems: ${order.size}\nTotal: ${orderTotal.textContent}`;
+  alert(`Order finalized.\n\n${summary}`);
+});
+
+clearOrderBtn.addEventListener('click', () => {
+  order.clear();
+  renderOrder();
+});
+
+orderType.addEventListener('change', () => {
+  // Recompute totals in case delivery fee applies.
+  const subtotal = Array.from(order.values()).reduce((sum, { item, qty }) => sum + item.price * qty, 0);
+  updateTotals(subtotal);
 });
 
 closeModal.addEventListener('click', closeModalFn);

@@ -35,11 +35,40 @@
           <h2>POS & Delivery</h2>
           <p class="muted">Manage order, track total, set status.</p>
         </div>
+
+        <div class="form-grid">
+          <label class="field">
+            <span>Customer name</span>
+            <input id="customerName" type="text" placeholder="Jane Doe" />
+          </label>
+          <label class="field">
+            <span>Phone</span>
+            <input id="customerPhone" type="tel" placeholder="123-456-7890" />
+          </label>
+          <label class="field">
+            <span>Order type</span>
+            <select id="orderType">
+              <option value="pickup">Pickup</option>
+              <option value="delivery">Delivery</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Delivery address</span>
+            <input id="deliveryAddress" type="text" placeholder="123 Main St" />
+          </label>
+          <label class="field wide">
+            <span>Order notes</span>
+            <textarea id="orderNotes" rows="2" placeholder="Extra napkins, no ice..."></textarea>
+          </label>
+        </div>
+
         <div class="order-list" id="orderList"></div>
         <div class="order-footer">
-          <div class="total">
-            <span>Total</span>
-            <strong id="orderTotal">$0.00</strong>
+          <div class="totals">
+            <div class="row"><span>Subtotal</span><strong id="subtotal">$0.00</strong></div>
+            <div class="row"><span>Tax (8%)</span><strong id="tax">$0.00</strong></div>
+            <div class="row"><span>Delivery</span><strong id="deliveryFee">$0.00</strong></div>
+            <div class="row grand"><span>Total</span><strong id="orderTotal">$0.00</strong></div>
           </div>
           <div class="status-control">
             <label for="statusSelect">Order status</label>
@@ -49,7 +78,10 @@
               <option value="Delivered">Delivered</option>
             </select>
           </div>
-          <button class="primary" id="submitOrder">Mark as Delivered</button>
+          <div class="action-row">
+            <button class="secondary" id="clearOrder">Clear Order</button>
+            <button class="primary" id="submitOrder">Finalize & Mark Delivered</button>
+          </div>
         </div>
       </section>
     </main>
