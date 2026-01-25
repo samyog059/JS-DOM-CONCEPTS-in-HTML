@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cozy Byte Café POS</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Mini Restaurant / Cafe POS</p>
+        <h1>Run orders, check nutrition, deliver with ease.</h1>
+        <p class="sub">Add items, monitor status, and peek at nutrition facts without leaving this page.</p>
+      </div>
+      <div class="status-chip" id="statusChip">Status: Pending</div>
+    </header>
+
+    <main class="layout">
+      <section class="panel menu">
+        <div class="panel-head">
+          <h2>Menu</h2>
+          <p class="muted">Tap items to add, view nutrition anytime.</p>
+        </div>
+        <div class="menu-grid" id="menuGrid"></div>
+      </section>
+
+      <section class="panel pos">
+        <div class="panel-head">
+          <h2>POS & Delivery</h2>
+          <p class="muted">Manage order, track total, set status.</p>
+        </div>
+        <div class="order-list" id="orderList"></div>
+        <div class="order-footer">
+          <div class="total">
+            <span>Total</span>
+            <strong id="orderTotal">$0.00</strong>
+          </div>
+          <div class="status-control">
+            <label for="statusSelect">Order status</label>
+            <select id="statusSelect">
+              <option value="Pending">Pending</option>
+              <option value="Preparing">Preparing</option>
+              <option value="Delivered">Delivered</option>
+            </select>
+          </div>
+          <button class="primary" id="submitOrder">Mark as Delivered</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-content">
+      <button class="icon-btn" id="closeModal" aria-label="Close">✕</button>
+      <div id="modalBody">
+        <p class="muted">Loading nutrition details...</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
