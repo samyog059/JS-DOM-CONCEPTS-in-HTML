@@ -1,5 +1,4 @@
 // Simple data set with product barcodes known to Open Food Facts
-// Simple data set with product barcodes known to Open Food Facts
 // Feel free to swap images/ids with your own items.
 const menuItems = [
   { id: '737628064502', name: 'Classic Cola', price: 2.5, img: 'https://images.unsplash.com/photo-1510626176961-4b37d0b4e904?auto=format&fit=crop&w=600&q=80' },
@@ -95,7 +94,7 @@ function changeQty(id, delta) {
 
 // Fetch nutrition info from Open Food Facts
 async function loadNutrition(barcode) {
-  modalBody.innerHTML = '<p class="muted">Fetching nutrition data...';
+  modalBody.innerHTML = '<p class="muted">Fetching nutrition data...</p>';
   openModal();
   try {
     const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
@@ -201,4 +200,3 @@ document.addEventListener('keydown', (e) => {
 
 renderMenu();
 renderOrder();
-  if (!customerName.value.trim()) {
