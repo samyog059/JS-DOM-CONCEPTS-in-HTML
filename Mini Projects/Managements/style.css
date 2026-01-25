@@ -40,7 +40,6 @@ body {
 
 .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-bottom: 12px; }
 .field { display: grid; gap: 6px; font-size: 14px; color: var(--text); }
-.field.wide { grid-column: 1 / -1; }
 input, textarea, select { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(31, 45, 61, 0.12); background: #ffffff; font: inherit; color: var(--text); }
 textarea { resize: vertical; min-height: 68px; }
 input:focus, textarea:focus, select:focus { outline: 2px solid rgba(255, 123, 0, 0.35); }
@@ -69,14 +68,9 @@ button { cursor: pointer; border: none; font: inherit; }
 .qty span { min-width: 18px; text-align: center; font-weight: 700; }
 
 .order-footer { display: grid; gap: 12px; background: var(--panel-2); border-radius: 12px; padding: 12px; border: 1px solid rgba(31, 45, 61, 0.06); }
-.totals { display: grid; gap: 6px; background: #ffffff; border-radius: 10px; padding: 10px; border: 1px solid rgba(31, 45, 61, 0.08); }
-.totals .row { display: flex; align-items: center; justify-content: space-between; }
-.totals .grand { font-size: 18px; font-weight: 800; color: var(--accent); }
 .total { display: flex; align-items: center; justify-content: space-between; font-size: 18px; }
 .status-control { display: grid; gap: 6px; }
 select { background: #ffffff; border-radius: 10px; border: 1px solid rgba(31, 45, 61, 0.12); padding: 10px; color: var(--text); }
-
-.action-row { display: flex; gap: 10px; }
 
 .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.35); display: grid; place-items: center; opacity: 0; pointer-events: none; transition: opacity 140ms ease; }
 .modal.show { opacity: 1; pointer-events: auto; }

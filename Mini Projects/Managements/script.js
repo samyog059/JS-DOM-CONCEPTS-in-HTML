@@ -1,65 +1,26 @@
 // Simple data set with product barcodes known to Open Food Facts
+// Simple data set with product barcodes known to Open Food Facts
 // Feel free to swap images/ids with your own items.
 const menuItems = [
-  {
-    id: '737628064502',
-    name: 'Classic Cola',
-    price: 2.5,
-    img: 'https://images.unsplash.com/photo-1510626176961-4b37d0b4e904?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: '5449000131805',
-    name: 'Orange Spark',
-    price: 3.0,
-    img: 'https://images.unsplash.com/photo-1604908178077-55f64b16cd59?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: '3045320001570',
-    name: 'Sparkling Water',
-    price: 1.8,
-    img: 'https://images.unsplash.com/photo-1527169402691-feff5539e52c?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: '7622210449283',
-    name: 'Hazelnut Treat',
-    price: 4.2,
-    img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: '7613034626844',
-    name: 'Iced Latte',
-    price: 4.5,
-    img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=600&q=80'
-  },
-  {
-    id: '20200200',
-    name: 'Club Sandwich',
-    price: 6.8,
-    img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=600&q=80'
-  }
+  { id: '737628064502', name: 'Classic Cola', price: 2.5, img: 'https://images.unsplash.com/photo-1510626176961-4b37d0b4e904?auto=format&fit=crop&w=600&q=80' },
+  { id: '5449000131805', name: 'Orange Spark', price: 3.0, img: 'https://images.unsplash.com/photo-1604908178077-55f64b16cd59?auto=format&fit=crop&w=600&q=80' },
+  { id: '3045320001570', name: 'Sparkling Water', price: 1.8, img: 'https://images.unsplash.com/photo-1527169402691-feff5539e52c?auto=format&fit=crop&w=600&q=80' },
+  { id: '7622210449283', name: 'Hazelnut Treat', price: 4.2, img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80' },
+  { id: '7613034626844', name: 'Iced Latte', price: 4.5, img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=600&q=80' },
+  { id: '20200200', name: 'Club Sandwich', price: 6.8, img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=600&q=80' }
 ];
 
 const order = new Map(); // id -> { item, qty }
 
-const TAX_RATE = 0.08;
-const DELIVERY_FEE = 3.5;
-
 const menuGrid = document.getElementById('menuGrid');
 const orderList = document.getElementById('orderList');
 const orderTotal = document.getElementById('orderTotal');
-const subtotalEl = document.getElementById('subtotal');
-const taxEl = document.getElementById('tax');
-const deliveryEl = document.getElementById('deliveryFee');
 const statusSelect = document.getElementById('statusSelect');
 const statusChip = document.getElementById('statusChip');
 const submitOrder = document.getElementById('submitOrder');
-const clearOrderBtn = document.getElementById('clearOrder');
 
 const customerName = document.getElementById('customerName');
 const customerPhone = document.getElementById('customerPhone');
-const orderType = document.getElementById('orderType');
-const deliveryAddress = document.getElementById('deliveryAddress');
-const orderNotes = document.getElementById('orderNotes');
 
 const modal = document.getElementById('modal');
 const modalBody = document.getElementById('modalBody');
@@ -86,14 +47,14 @@ function renderMenu() {
 function renderOrder() {
   if (order.size === 0) {
     orderList.innerHTML = '<p class="muted">No items yet. Add something tasty!</p>';
-    updateTotals(0);
+    orderTotal.textContent = '$0.00';
     return;
   }
 
-  let subtotal = 0;
+  let total = 0;
   orderList.innerHTML = Array.from(order.values()).map(({ item, qty }) => {
     const line = item.price * qty;
-    subtotal += line;
+    total += line;
     return `
       <div class="order-item" data-id="${item.id}">
         <h4>${item.name}</h4>
@@ -107,7 +68,7 @@ function renderOrder() {
     `;
   }).join('');
 
-  updateTotals(subtotal);
+  orderTotal.textContent = `$${total.toFixed(2)}`;
 }
 
 function addToOrder(id) {
@@ -117,17 +78,6 @@ function addToOrder(id) {
   existing.qty += 1;
   order.set(id, existing);
   renderOrder();
-}
-
-function updateTotals(subtotal) {
-  const tax = subtotal * TAX_RATE;
-  const delivery = orderType.value === 'delivery' && subtotal > 0 ? DELIVERY_FEE : 0;
-  const total = subtotal + tax + delivery;
-
-  subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-  taxEl.textContent = `$${tax.toFixed(2)}`;
-  deliveryEl.textContent = `$${delivery.toFixed(2)}`;
-  orderTotal.textContent = `$${total.toFixed(2)}`;
 }
 
 function changeQty(id, delta) {
@@ -145,7 +95,7 @@ function changeQty(id, delta) {
 
 // Fetch nutrition info from Open Food Facts
 async function loadNutrition(barcode) {
-  modalBody.innerHTML = '<p class="muted">Fetching nutrition data...</p>';
+  modalBody.innerHTML = '<p class="muted">Fetching nutrition data...';
   openModal();
   try {
     const res = await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
@@ -234,27 +184,10 @@ submitOrder.addEventListener('click', () => {
     return;
   }
 
-  if (orderType.value === 'delivery' && !deliveryAddress.value.trim()) {
-    alert('Please add a delivery address.');
-    deliveryAddress.focus();
-    return;
-  }
-
   statusSelect.value = 'Delivered';
   statusChip.textContent = 'Status: Delivered';
-  const summary = `Order for ${customerName.value} (${orderType.value})\nPhone: ${customerPhone.value}\nAddress: ${deliveryAddress.value || 'N/A'}\nNotes: ${orderNotes.value || 'N/A'}\n\nItems: ${order.size}\nTotal: ${orderTotal.textContent}`;
+  const summary = `Order for ${customerName.value}\nPhone: ${customerPhone.value}\nItems: ${order.size}\nTotal: ${orderTotal.textContent}`;
   alert(`Order finalized.\n\n${summary}`);
-});
-
-clearOrderBtn.addEventListener('click', () => {
-  order.clear();
-  renderOrder();
-});
-
-orderType.addEventListener('change', () => {
-  // Recompute totals in case delivery fee applies.
-  const subtotal = Array.from(order.values()).reduce((sum, { item, qty }) => sum + item.price * qty, 0);
-  updateTotals(subtotal);
 });
 
 closeModal.addEventListener('click', closeModalFn);
@@ -268,3 +201,4 @@ document.addEventListener('keydown', (e) => {
 
 renderMenu();
 renderOrder();
+  if (!customerName.value.trim()) {
