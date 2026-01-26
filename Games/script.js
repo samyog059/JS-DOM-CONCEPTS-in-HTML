@@ -16,6 +16,8 @@ const Easyword = [
     { word:"icon", meaning:"Small picture representing a program or file"}
     { word:"software", meaning:"Programs and operating systems"},
     
+
+
 ];
 
 const Mediumword = [
