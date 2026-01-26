@@ -34,7 +34,10 @@ const Mediumword = [
     { word:"motherboard", meaning:"Main circuit board of a computer"},
     { word:"protocol", meaning:"Rules for communication between computers"},
     { word:"encrypt", meaning:"Convert data to secret code"},
-    { word:"router", meaning:"Device that routes network traffic"}
+    { word:"router", meaning:"Device that routes network traffic"},
+    { word:"software", meaning:"Programs and operating information used by a computer"},
+    { word:"hardware", meaning:"Physical components of a computer"},
+
 ];
 
 const Hardword = [
