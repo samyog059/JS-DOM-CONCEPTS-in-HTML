@@ -14,6 +14,8 @@ const Easyword = [
     { word:"virus", meaning:"Malicious program that harms computer"},
     { word:"megabyte", meaning:"1 million bytes of data"},
     { word:"icon", meaning:"Small picture representing a program or file"}
+    { word:"software", meaning:"Programs and operating systems"},
+    
 ];
 
 const Mediumword = [
