@@ -13,11 +13,9 @@ const Easyword = [
     { word:"modem", meaning:"Device to connect to internet"},
     { word:"virus", meaning:"Malicious program that harms computer"},
     { word:"megabyte", meaning:"1 million bytes of data"},
-    { word:"icon", meaning:"Small picture representing a program or file"}
-    { word:"software", meaning:"Programs and operating systems"},
+    { word:"icon", meaning:"Small picture representing a program or file"},
+    { word:"link", meaning:"Clickable connection to another webpage"},
     
-
-
 ];
 
 const Mediumword = [
