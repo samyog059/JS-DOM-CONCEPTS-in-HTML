@@ -36,7 +36,7 @@ const Mediumword = [
     { word:"encrypt", meaning:"Convert data to secret code"},
     { word:"router", meaning:"Device that routes network traffic"},
     { word:"software", meaning:"Programs and operating information used by a computer"},
-    { word:"hardware", meaning:"Physical components of a computer"},
+    { word:"hardware", meaning:"Physical components of a computer"}
 
 ];
 
