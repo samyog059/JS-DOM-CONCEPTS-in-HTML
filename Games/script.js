@@ -57,7 +57,7 @@ const Hardword = [
     { word:"bandwidth", meaning:"How much data moves per second"},
     { word:"virtualization", meaning:"Running virtual machines on one host"},
     { word:"wearable technology", meaning:"Electronic devices worn on the body"},
-    
+    { word:"quantum computing", meaning:"Using quantum-mechanical phenomena for computation"}
 
 ];
 
