@@ -37,6 +37,7 @@ const Mediumword = [
     { word:"router", meaning:"Device that routes network traffic"},
     { word:"software", meaning:"Programs and operating information used by a computer"},
     { word:"hardware", meaning:"Physical components of a computer"},
+    { word:"pixel", meaning:"Smallest unit of a digital image"},
 
 ];
 
