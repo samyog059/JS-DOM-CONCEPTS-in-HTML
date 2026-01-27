@@ -56,7 +56,7 @@ const Hardword = [
     { word:"IP address", meaning:"Unique number identifying a device on network"},
     { word:"bandwidth", meaning:"How much data moves per second"},
     { word:"virtualization", meaning:"Running virtual machines on one host"},
-    { word:"wearable technology", meaning:"Electronic devices worn on the body"}
+    { word:"wearable technology", meaning:"Electronic devices worn on the body"
 ];
 
 const ROUND_TIME = { Easy: 50, Medium: 40, Hard: 30 };
