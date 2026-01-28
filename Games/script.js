@@ -16,6 +16,7 @@ const Easyword = [
     { word:"icon", meaning:"Small picture representing a program or file"},
     { word:"link", meaning:"Clickable connection to another webpage"},
     { word:"email", meaning:"Electronic mail for communication"},
+    { word:"file", meaning:"Collection of data stored on a computer"}
     
 ];
 
