@@ -39,6 +39,7 @@ const Mediumword = [
     { word:"hardware", meaning:"Physical components of a computer"},
     { word:"pixel", meaning:"Smallest unit of a digital image"},
     {word:"spam", meaning:"Unsolicited messages sent in bulk"},
+    
 
 ];
 
