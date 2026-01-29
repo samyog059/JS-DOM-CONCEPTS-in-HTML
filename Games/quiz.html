@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Computer Quiz Trainer</title>
+  <link rel="stylesheet" href="quiz.css">
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="wrap">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Quiz Practice</p>
+        <h1>Sharpen your computer knowledge.</h1>
+        <p class="sub">Timed multiple-choice questions with score tracking and optional hints. Add more questions in <span class="file">quiz.js</span> to expand.</p>
+        <div class="actions">
+          <button id="startBtn" class="primary">Start Quiz</button>
+          <button id="restartBtn" class="ghost">Restart</button>
+        </div>
+      </div>
+      <div class="panel stats">
+        <div class="stat">
+          <p>Score</p>
+          <strong id="score">0</strong>
+        </div>
+        <div class="stat">
+          <p>Question</p>
+          <strong id="progress">0 / 0</strong>
+        </div>
+        <div class="stat">
+          <p>Time</p>
+          <strong id="timeLabel">00s</strong>
+        </div>
+      </div>
+    </header>
+
+    <section class="panel quiz">
+      <div class="quiz-head">
+        <div class="pill" id="difficulty">Mixed · 20s each</div>
+        <div class="timer" aria-live="polite">
+          <div class="timer-bar" id="timerBar"></div>
+          <span id="timerText">00s</span>
+        </div>
+      </div>
+
+      <div class="question-block" aria-live="polite">
+        <p class="eyebrow" id="status">Press Start to begin.</p>
+        <h2 id="question">The question will appear here.</h2>
+        <div id="options" class="options" role="group" aria-label="Answer choices"></div>
+      </div>
+
+      <div class="controls">
+        <button id="hintBtn" class="ghost">Show Hint</button>
+        <button id="nextBtn" class="primary" disabled>Next</button>
+      </div>
+      <p class="hint" id="hint">Hint is hidden until requested.</p>
+    </section>
+  </main>
+
+  <script src="quiz.js"></script>
+</body>
+</html>
