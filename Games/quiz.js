@@ -78,6 +78,12 @@ const questionBank = [
     answer: 1,
     hint: "It translates human-friendly names to IP addresses."
   },
+  {
+    question: "Which programming language is primarily used for web development on the client side?",
+    options: ["Python", "Java", "JavaScript", "C++"],
+    answer: 2,
+    hint: "It runs in the browser."
+  }
 ];
 
 const QUESTION_TIME = 20;
