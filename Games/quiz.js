@@ -73,7 +73,10 @@ const questionBank = [
     hint: "It sits between // and the first /."
   },
   {
-    
+    question: "What is the main function of DNS?",
+    options: ["Encrypt data", "Translate domain names to IP addresses", "Manage email", "Host websites"],
+    answer: 1,
+    hint: "It translates human-friendly names to IP addresses."
   }
 ];
 
