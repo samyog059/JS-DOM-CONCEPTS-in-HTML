@@ -77,7 +77,7 @@ const questionBank = [
     options: ["Encrypt data", "Translate domain names to IP addresses", "Manage email", "Host websites"],
     answer: 1,
     hint: "It translates human-friendly names to IP addresses."
-  }
+  },
 ];
 
 const QUESTION_TIME = 20;
