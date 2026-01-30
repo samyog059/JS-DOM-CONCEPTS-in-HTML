@@ -72,7 +72,9 @@ const questionBank = [
     answer: 2,
     hint: "It sits between // and the first /."
   },
-  {}
+  {
+    
+  }
 ];
 
 const QUESTION_TIME = 20;
