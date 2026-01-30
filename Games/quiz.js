@@ -71,7 +71,8 @@ const questionBank = [
     options: ["Protocol", "Path", "Hostname", "Query string"],
     answer: 2,
     hint: "It sits between // and the first /."
-  }
+  },
+  {}
 ];
 
 const QUESTION_TIME = 20;
