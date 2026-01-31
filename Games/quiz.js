@@ -86,8 +86,8 @@ const questionBank = [
   }
 ];
 
-const QUESTION_TIME = 20;
-const BASE_POINTS = 10;
+const QUESTION_TIME = 15;
+const BASE_POINTS = 12;
 const HINT_PENALTY = 0.5; // score is halved when hint is used
 
 const questionEl = document.getElementById("question");
