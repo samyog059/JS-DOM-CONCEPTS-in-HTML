@@ -1,5 +1,28 @@
 <html>
     <head>
-        
+       <title>
+New Code
+       </title> 
     </head>
+    <body>
+        Counter using javaScript:
+        <button onclick="decrease()">-</button>
+        <span id="counter">0</span>
+        <button onclick="increase()">+</button>
+
+        <script>
+            let count = 0;
+            const counter = document.getElementById('counter');
+
+            function decrease() {
+                count--;
+                counter.textContent = count;
+            }
+
+            function increase() {
+                count++;
+                counter.textContent = count;
+            }
+        </script>
+    </body>
 </html>
