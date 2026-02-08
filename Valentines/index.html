@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For You, With Love</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-top: #ff7a8a;
+      --bg-bottom: #ffb5c0;
+      --card: rgba(255, 255, 255, 0.12);
+      --card-border: rgba(255, 255, 255, 0.35);
+      --ink: #2c1a1a;
+      --accent: #f03861;
+      --accent-2: #ffb347;
+      --glow: rgba(255, 255, 255, 0.6);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 15% 20%, rgba(255,255,255,0.16), transparent 30%),
+                  radial-gradient(circle at 80% 10%, rgba(255,255,255,0.12), transparent 28%),
+                  radial-gradient(circle at 70% 80%, rgba(255,255,255,0.1), transparent 30%),
+                  linear-gradient(135deg, var(--bg-top), var(--bg-bottom));
+      overflow: hidden;
+      color: var(--ink);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .floaters {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .floater {
+      position: absolute;
+      width: 18px;
+      aspect-ratio: 1;
+      background: radial-gradient(circle at 30% 30%, #fff, #ffc5d2 40%, #ff7a8a 70%);
+      clip-path: path('M10 3c-1-2-4-2-5 1-1 2 1 5 5 8 4-3 6-6 5-8-1-3-4-3-5-1z');
+      opacity: 0.8;
+      animation: rise 12s linear infinite;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,0.12));
+    }
+
+    @keyframes rise {
+      0% { transform: translate3d(var(--x), 100vh, 0) scale(0.7) rotate(0deg); opacity: 0; }
+      15% { opacity: 1; }
+      100% { transform: translate3d(calc(var(--x) + 20px), -20vh, 0) scale(1.05) rotate(18deg); opacity: 0; }
+    }
+
+    .card-shell {
+      position: relative;
+      z-index: 1;
+      width: min(760px, 92vw);
+      padding: 32px;
+      perspective: 1600px;
+    }
+
+    .envelope {
+      position: relative;
+      border: 1px solid var(--card-border);
+      background: linear-gradient(145deg, rgba(255,255,255,0.16), rgba(255,255,255,0.08));
+      backdrop-filter: blur(8px);
+      box-shadow: 0 30px 60px rgba(240, 56, 97, 0.25), 0 0 0 1px rgba(255,255,255,0.18);
+      border-radius: 28px;
+      overflow: hidden;
+      padding: 40px 32px 28px;
+      transform-style: preserve-3d;
+      transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s ease;
+    }
+
+    .envelope.open {
+      transform: rotateX(0deg) translateY(-6px) scale(1.01);
+      box-shadow: 0 36px 80px rgba(240, 56, 97, 0.4), 0 0 0 1px rgba(255,255,255,0.25);
+    }
+
+    .fold {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.3), rgba(255,255,255,0.05));
+      transform-origin: top;
+      transform: rotateX(-88deg);
+      transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+    }
+
+    .envelope.open .fold {
+      transform: rotateX(0deg);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 4vw, 44px);
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      margin: 0 0 24px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 13px;
+    }
+
+    .message {
+      font-size: 16px;
+      line-height: 1.7;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      max-width: 620px;
+    }
+
+    .envelope.open .message {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0.2s;
+    }
+
+    .signature {
+      margin-top: 26px;
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      letter-spacing: 0.04em;
+    }
+
+    .cta-row {
+      margin-top: 26px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      cursor: pointer;
+      background: linear-gradient(120deg, var(--accent), #ff6f61, var(--accent-2));
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 12px 20px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      box-shadow: 0 12px 24px rgba(240, 56, 97, 0.35);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    button:hover { transform: translateY(-2px) scale(1.01); box-shadow: 0 16px 28px rgba(240, 56, 97, 0.45); }
+    button:active { transform: translateY(0); box-shadow: 0 10px 18px rgba(240, 56, 97, 0.35); }
+
+    .tagline {
+      color: rgba(44, 26, 26, 0.7);
+      font-size: 13px;
+    }
+
+    .seal {
+      position: absolute;
+      right: 22px;
+      bottom: 22px;
+      width: 80px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.7), rgba(240,56,97,0.4) 50%, rgba(240,56,97,0.9));
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.3), 0 10px 20px rgba(240, 56, 97, 0.35);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .seal::after {
+      content: '❤';
+      font-size: 26px;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.18));
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff, rgba(255,255,255,0.2));
+      filter: blur(0.8px);
+      animation: twinkle 2.6s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { transform: scale(0.6); opacity: 0.3; }
+      50% { transform: scale(1.3); opacity: 1; }
+    }
+
+    .confetti {
+      position: fixed;
+      width: 18px;
+      aspect-ratio: 1;
+      background: radial-gradient(circle at 30% 30%, #fff, #ffd7e5 55%, #f03861 80%);
+      clip-path: path('M10 3c-1-2-4-2-5 1-1 2 1 5 5 8 4-3 6-6 5-8-1-3-4-3-5-1z');
+      pointer-events: none;
+      animation: floatDown 2.8s ease-in forwards;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,0.18));
+      opacity: 0.95;
+    }
+
+    @keyframes floatDown {
+      0% { transform: translate3d(var(--cx), -10vh, 0) scale(0.9) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      100% { transform: translate3d(calc(var(--cx) + 12px), 110vh, 0) scale(1.1) rotate(24deg); opacity: 0; }
+    }
+
+    @media (max-width: 600px) {
+      .card-shell { padding: 18px; }
+      .envelope { padding: 32px 22px 24px; }
+      .seal { width: 64px; right: 18px; bottom: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="floaters" id="floaters"></div>
+
+  <div class="card-shell">
+    <div class="envelope" id="envelope">
+      <div class="fold"></div>
+      <h1>For My Love</h1>
+      <div class="subtitle">Happy Valentine's Day</div>
+      <p class="message" id="message">
+        In the quiet moments and the bright ones, you are the melody I carry. Your laugh rewrites dull days, your kindness steadies my world, and your presence makes ordinary seconds feel cinematic.
+        Thank you for being the calm and the spark — my favorite surprise in every sunrise and the soft glow in every twilight.
+      </p>
+      <p class="message signature" id="signature">With all my heart, Samyog Pangeni</p>
+      <div class="cta-row">
+        <button id="openBtn">Open my heart</button>
+        <span class="tagline">Press the seal or the button to reveal what's inside.</span>
+      </div>
+      <div class="seal" id="seal"></div>
+    </div>
+  </div>
+
+  <script>
+    const envelope = document.getElementById('envelope');
+    const openBtn = document.getElementById('openBtn');
+    const seal = document.getElementById('seal');
+    const floaters = document.getElementById('floaters');
+
+    // Create perpetual background floaters.
+    const colors = ['#f03861', '#ff6f61', '#ffb5c0', '#ffd7e5'];
+    for (let i = 0; i < 18; i++) {
+      const f = document.createElement('span');
+      f.className = 'floater';
+      f.style.setProperty('--x', `${Math.random() * 100}vw`);
+      f.style.animationDelay = `${Math.random() * -12}s`;
+      f.style.background = `radial-gradient(circle at 30% 30%, #fff, ${colors[i % colors.length]} 55%, #f03861 80%)`;
+      floaters.appendChild(f);
+    }
+
+    const sparklePositions = [
+      { x: '10%', y: '24%', d: '0s' },
+      { x: '88%', y: '26%', d: '0.5s' },
+      { x: '76%', y: '78%', d: '1s' },
+      { x: '20%', y: '76%', d: '1.6s' },
+      { x: '48%', y: '12%', d: '2.2s' }
+    ];
+
+    sparklePositions.forEach(({ x, y, d }) => {
+      const s = document.createElement('span');
+      s.className = 'sparkle';
+      s.style.left = x;
+      s.style.top = y;
+      s.style.animationDelay = d;
+      floaters.appendChild(s);
+    });
+
+    const openCard = () => {
+      if (envelope.classList.contains('open')) return;
+      envelope.classList.add('open');
+      releaseConfetti();
+    };
+
+    const releaseConfetti = () => {
+      for (let i = 0; i < 26; i++) {
+        const c = document.createElement('span');
+        c.className = 'confetti';
+        c.style.setProperty('--cx', `${Math.random() * 100}vw`);
+        c.style.animationDelay = `${Math.random() * 0.4}s`;
+        c.style.background = `radial-gradient(circle at 30% 30%, #fff, ${colors[i % colors.length]} 55%, #f03861 80%)`;
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 3200);
+      }
+    };
+
+    openBtn.addEventListener('click', openCard);
+    seal.addEventListener('click', openCard);
+  </script>
+</body>
+</html>
