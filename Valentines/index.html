@@ -176,6 +176,67 @@
       transition-delay: 0.4s;
     }
 
+    .nameplate {
+      margin-top: 12px;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.16), rgba(255,255,255,0.08));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25), 0 16px 30px rgba(0,0,0,0.15);
+      color: #ffe9f2;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .envelope.open .nameplate { opacity: 1; transform: translateY(0); transition-delay: 0.55s; }
+
+    .nameplate .from {
+      font-size: 12px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      opacity: 0.85;
+    }
+
+    .nameplate .name {
+      font-family: 'Great Vibes', cursive;
+      font-size: 30px;
+      letter-spacing: 0.06em;
+      background: linear-gradient(120deg, #fff6ff, #ffd0f3 45%, #ffe8b8 80%);
+      -webkit-background-clip: text;
+      color: transparent;
+      text-shadow: 0 6px 14px rgba(0,0,0,0.2);
+      position: relative;
+      padding-right: 36px;
+    }
+
+    .nameplate .spark-line {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      width: 28px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #fff8ec, transparent);
+      filter: blur(1px);
+      transform: translateY(-50%);
+      opacity: 0;
+      animation: shimmer 1.9s ease-in-out infinite;
+      animation-play-state: paused;
+    }
+
+    .nameplate.lit .spark-line { opacity: 1; animation-play-state: running; }
+
+    @keyframes shimmer {
+      0% { transform: translateY(-50%) translateX(-12px); opacity: 0; }
+      35% { opacity: 1; }
+      70% { transform: translateY(-50%) translateX(12px); opacity: 0.8; }
+      100% { opacity: 0; }
+    }
+
     .cta-row {
       margin-top: 26px;
       display: flex;
@@ -338,6 +399,11 @@
         Thank you for being both the calm and the spark — my favorite plot twist, my truest home, the story I choose in every season.
       </p>
       <p class="message signature" id="signature">Always yours, Samyog</p>
+      <div class="nameplate" id="nameplate">
+        <span class="from">from</span>
+        <span class="name">Samyog Pangeni</span>
+        <span class="spark-line"></span>
+      </div>
       <p class="ps" id="ps">P.S. No matter the day — rose, propose, chocolate, teddy, hugs, kisses, or the finale — every path still circles back to your heart.</p>
       <div class="cta-row">
         <button id="openBtn">Open our story</button>
@@ -355,6 +421,7 @@
     const message = document.getElementById('message');
     const signature = document.getElementById('signature');
     const ps = document.getElementById('ps');
+    const nameplate = document.getElementById('nameplate');
 
     // Create perpetual background floaters.
     const colors = ['#f03861', '#ff6f61', '#ffb5c0', '#ffd7e5'];
@@ -416,6 +483,7 @@
       await typeText(message, originalMessage);
       await typeText(signature, originalSignature, 34);
       await typeText(ps, originalPs, 32);
+      nameplate.classList.add('lit');
     };
 
     const releaseConfetti = () => {
