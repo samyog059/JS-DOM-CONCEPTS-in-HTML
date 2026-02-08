@@ -27,6 +27,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: clamp(12px, 4vw, 32px);
       background: radial-gradient(circle at 15% 20%, rgba(255,255,255,0.16), transparent 30%),
                   radial-gradient(circle at 80% 10%, rgba(255,255,255,0.12), transparent 28%),
                   radial-gradient(circle at 70% 80%, rgba(255,255,255,0.1), transparent 30%),
@@ -70,7 +71,9 @@
     .card-shell {
       position: relative;
       z-index: 1;
-      width: min(780px, 94vw);
+      width: min(820px, 100%);
+      max-width: 860px;
+      margin: 0 auto;
       padding: clamp(18px, 4vw, 32px);
       perspective: 1600px;
     }
@@ -177,6 +180,7 @@
       transition: opacity 0.6s ease, transform 0.6s ease;
       max-width: 640px;
       color: rgba(255,255,255,0.94);
+      word-break: break-word;
     }
 
     .envelope.open .message {
@@ -439,23 +443,35 @@
     }
 
     @media (max-width: 720px) {
-      body { align-items: flex-start; padding: 18px 0 34px; }
-      .card-shell { width: 100%; }
-      .envelope { padding: 28px 20px 24px; }
-      h1 { font-size: clamp(30px, 6vw, 38px); }
+      body { align-items: flex-start; justify-content: center; padding: 20px clamp(14px, 4vw, 22px) 42px; }
+      .card-shell { width: 100%; padding: 0; }
+      .envelope { padding: 22px 18px 20px; border-radius: 22px; box-shadow: 0 24px 48px rgba(240, 56, 97, 0.22); }
+      h1 { font-size: clamp(28px, 6vw, 36px); }
       .subtitle { letter-spacing: 0.12em; font-size: 12px; }
-      .cta-row { flex-direction: column; align-items: flex-start; }
-      button { width: 100%; text-align: center; }
-      .nameplate { width: fit-content; }
+      .note { padding: 16px 14px; }
+      .message { font-size: 15px; line-height: 1.65; }
+      .cta-row { flex-direction: column; align-items: stretch; }
+      button { width: 100%; text-align: center; padding: 14px; }
+      .tagline { line-height: 1.5; }
+      .seal { position: static; margin-top: 14px; align-self: flex-start; }
     }
 
     @media (max-width: 480px) {
-      .envelope { border-radius: 20px; }
-      .message { font-size: 15px; line-height: 1.65; }
-      .signature { font-size: 22px; }
+      .envelope { border-radius: 18px; padding: 18px 14px 18px; }
+      .message { font-size: 14.5px; line-height: 1.62; }
+      .signature { font-size: 21px; }
       .nameplate { flex-direction: column; align-items: flex-start; gap: 4px; }
-      .nameplate .name { font-size: 26px; }
-      .seal { width: 64px; right: 12px; bottom: 12px; }
+      .nameplate .name { font-size: 24px; }
+      .seal { width: 62px; }
+      .halo, .orbit { opacity: 0.6; }
+    }
+
+    @media (max-width: 360px) {
+      h1 { font-size: 26px; }
+      .subtitle { font-size: 11px; letter-spacing: 0.1em; }
+      .message { font-size: 14px; }
+      button { font-size: 14px; padding: 12px; }
+      .tagline { font-size: 12px; }
     }
   </style>
 </head>
@@ -567,7 +583,7 @@
       message.innerHTML = originalMessageHTML;
       await typeText(signature, originalSignature, 34);
       await typeText(ps, originalPs, 32);
-      nameplate.classList.add('lit');
+      if (nameplate) { nameplate.classList.add('lit'); }
     };
 
     const releaseConfetti = () => {
