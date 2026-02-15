@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Valentine's Day!</title>
+    <style>
+        :root {
+            --bg-1: #ff8fb1;
+            --bg-2: #ff5d93;
+            --accent: #ff2e78;
+            --accent-dark: #e61f63;
+            --text-dark: #7a123f;
+            --card: rgba(255, 255, 255, 0.78);
+            --white: #fff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: radial-gradient(circle at top, #ffd5e5 0%, var(--bg-1) 40%, var(--bg-2) 100%);
+            display: grid;
+            place-items: center;
+            padding: 16px;
+        }
+
+        #heartContainer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .heart {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background: #ff3d7a;
+            transform: rotate(-45deg);
+            animation: floatUp linear forwards;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.14));
+        }
+
+        .heart::before,
+        .heart::after {
+            content: "";
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background: inherit;
+            border-radius: 50%;
+        }
+
+        .heart::before {
+            left: 0;
+            top: -13px;
+        }
+
+        .heart::after {
+            left: 13px;
+            top: 0;
+        }
+
+        @keyframes floatUp {
+            from {
+                transform: translateY(105vh) rotate(-45deg) scale(0.8);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-120px) rotate(-45deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        .card {
+            width: min(560px, 100%);
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 16px 45px rgba(122, 18, 63, 0.25);
+            text-align: center;
+            z-index: 1;
+            animation: cardIn 500ms ease;
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            color: var(--accent);
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            line-height: 1.15;
+            text-shadow: 0 3px 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .subtitle {
+            margin: 0 0 20px;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .entrance-note {
+            margin: 0 0 18px;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        .unlock {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        #loveCode {
+            width: 100%;
+            border: 2px solid rgba(255, 46, 120, 0.3);
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 1rem;
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        #loveCode:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(255, 46, 120, 0.18);
+        }
+
+        #showVideoBtn,
+        #enterBtn {
+            border: none;
+            border-radius: 12px;
+            padding: 12px 18px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: var(--white);
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.15s ease, filter 0.15s ease;
+        }
+
+        #showVideoBtn:hover,
+        #enterBtn:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.06);
+        }
+
+        #showVideoBtn:active,
+        #enterBtn:active {
+            transform: translateY(0);
+        }
+
+        #secureSection {
+            display: none;
+        }
+
+        #secureSection.show {
+            display: block;
+            animation: cardIn 320ms ease;
+        }
+
+        #statusText {
+            min-height: 22px;
+            margin: 0 0 12px;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .error {
+            color: #b40047;
+        }
+
+        .success {
+            color: #1f9a48;
+        }
+
+        #videoContainer {
+            display: none;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 320ms ease, transform 320ms ease;
+        }
+
+        #videoContainer.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        video {
+            width: 100%;
+            max-height: 62vh;
+            border-radius: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 22px rgba(255, 46, 120, 0.35);
+            background: #000;
+        }
+
+        .shake {
+            animation: shake 280ms linear;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            50% { transform: translateX(6px); }
+            75% { transform: translateX(-4px); }
+            100% { transform: translateX(0); }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 18px;
+                border-radius: 18px;
+            }
+
+            .unlock {
+                grid-template-columns: 1fr;
+            }
+
+            #showVideoBtn {
+                width: 100%;
+            }
+
+            #enterBtn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card" id="card">
+        <h1>Happy Valentine's Day Munu ❤️</h1>
+
+        <div id="entranceSection">
+            <p class="entrance-note">Wishing you a day full of love, smiles, and sweet memories 💞</p>
+            <button id="enterBtn" type="button">Open Surprise</button>
+        </div>
+
+        <div id="secureSection">
+            <p class="subtitle">Enter your love code to unlock a little surprise 💌</p>
+
+            <div class="unlock" id="unlockArea">
+                <input id="loveCode" type="password" inputmode="numeric" placeholder="Enter Love Code" aria-label="Love Code">
+                <button id="showVideoBtn" type="button">Unlock Surprise</button>
+            </div>
+
+            <p id="statusText"></p>
+
+            <div id="videoContainer">
+                <video controls>
+                    <source src="Munu.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <div id="heartContainer"></div>
+
+    <script>
+        const heartContainer = document.getElementById('heartContainer');
+        const enterBtn = document.getElementById('enterBtn');
+        const entranceSection = document.getElementById('entranceSection');
+        const secureSection = document.getElementById('secureSection');
+        const button = document.getElementById('showVideoBtn');
+        const codeInput = document.getElementById('loveCode');
+        const statusText = document.getElementById('statusText');
+        const unlockArea = document.getElementById('unlockArea');
+        const videoContainer = document.getElementById('videoContainer');
+        const PASSWORD = '2214';
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            const size = 12 + Math.random() * 24;
+            const duration = 3 + Math.random() * 3.2;
+            const hue = 335 + Math.random() * 20;
+
+            heart.className = 'heart';
+            heart.style.left = `${Math.random() * window.innerWidth}px`;
+            heart.style.width = `${size}px`;
+            heart.style.height = `${size}px`;
+            heart.style.animationDuration = `${duration}s`;
+            heart.style.background = `hsl(${hue} 92% 62%)`;
+
+            heartContainer.appendChild(heart);
+            heart.addEventListener('animationend', () => heart.remove());
+        }
+
+        setInterval(createHeart, 220);
+
+        function showMessage(message, type) {
+            statusText.textContent = message;
+            statusText.className = type;
+        }
+
+        function unlockSurprise() {
+            const userInput = codeInput.value.trim();
+
+            if (userInput === PASSWORD) {
+                showMessage('Unlocked! I love you so much mero sanu munu baby 💖', 'success');
+                unlockArea.style.display = 'none';
+                videoContainer.classList.add('show');
+                return;
+            }
+
+            showMessage('Oops! Wrong love code. Try again ❤️', 'error');
+            codeInput.value = '';
+            codeInput.focus();
+            unlockArea.classList.remove('shake');
+            void unlockArea.offsetWidth;
+            unlockArea.classList.add('shake');
+        }
+
+        function enterCard() {
+            entranceSection.style.display = 'none';
+            secureSection.classList.add('show');
+            codeInput.focus();
+        }
+
+        enterBtn.addEventListener('click', enterCard);
+        button.addEventListener('click', unlockSurprise);
+        codeInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                unlockSurprise();
+            }
+        });
+    </script>
+</body>
+</html>
